@@ -30,3 +30,21 @@ Assume the operator supplies:
 The Skill should show what it proposes to write into each Pack file, plus `TO_CONFIRM`, conflicts and excluded items.
 
 It should **not** immediately create a polished company profile that silently mixes all source content together.
+
+## After operator approval
+
+Assume the normalized `company-id` is `example-company`.
+
+The final approved, de-identified Pack should be written to:
+
+```text
+company-data/packs/example-company/
+```
+
+and `company-data/REGISTRY.yaml` should contain an entry pointing to:
+
+```text
+company-data/packs/example-company
+```
+
+A downstream Agent can then discover the company through the Registry and read `company-data/packs/example-company/INDEX.md` without re-running BUILD.
