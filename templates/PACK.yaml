@@ -1,0 +1,9 @@
+pack_id: <company-id>
+company_name: <company-name>
+version: 1.0.0
+status: draft
+updated_at: <YYYY-MM-DD>
+source_types: []
+default_language: <language>
+fact_scope_policy: strict
+notes: "Formalize only after operator review and approval."
