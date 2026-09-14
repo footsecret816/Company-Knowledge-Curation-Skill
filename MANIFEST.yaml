@@ -1,10 +1,11 @@
 name: company-knowledge-curation
-version: 1.0.0
+version: 1.1.0
 kind: agent-skill
 status: stable-baseline
 description: >
   Curates raw or legacy company information into concise, scoped,
-  traceable and reviewable Company Packs.
+  traceable and reviewable Company Packs, then publishes approved,
+  de-identified Packs into an internal company-data hub for reuse by other Agents.
 modes:
   - BUILD
   - UPDATE
@@ -17,7 +18,14 @@ scope_rules: SCOPE_RULES.md
 fact_rules: FACT_RULES.md
 workflow: WORKFLOW.md
 integration: INTEGRATION.md
+data_root: company-data
+registry: company-data/REGISTRY.yaml
+formal_pack_root: company-data/packs
+inbox_root: company-data/inbox
+pending_root: company-data/pending
 requires_operator_approval_for_formal_write: true
+supports_read_only_company_source: true
+requires_deidentified_publishable_pack_data: true
 company_agnostic: true
 model_agnostic: true
 platform_agnostic: true
