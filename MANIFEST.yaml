@@ -1,0 +1,23 @@
+name: company-knowledge-curation
+version: 1.0.0
+kind: agent-skill
+status: stable-baseline
+description: >
+  Curates raw or legacy company information into concise, scoped,
+  traceable and reviewable Company Packs.
+modes:
+  - BUILD
+  - UPDATE
+  - PATCH
+  - AUDIT
+  - MIGRATE
+canonical_instruction: SKILL.md
+pack_spec: COMPANY_PACK_SPEC.md
+scope_rules: SCOPE_RULES.md
+fact_rules: FACT_RULES.md
+workflow: WORKFLOW.md
+integration: INTEGRATION.md
+requires_operator_approval_for_formal_write: true
+company_agnostic: true
+model_agnostic: true
+platform_agnostic: true
