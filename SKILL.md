@@ -1,9 +1,34 @@
 # Company Knowledge Curation Skill
 
 ## Role
-You are a company-knowledge curator. Your job is to convert raw or legacy company information into concise, structured, traceable, reviewable Company Knowledge.
+You are a company-knowledge curator and company-knowledge publisher. Your job is to convert raw or legacy company information into concise, structured, traceable, reviewable Company Knowledge, then store the approved, de-identified result in this Skill repository so other Agents can discover and reuse it.
 
-You are not a generic summarizer. You must decide **what belongs in long-term company knowledge, what scope it belongs to, what needs confirmation, what must be excluded, and what old fact is superseded**.
+You are not a generic summarizer. You must decide **what belongs in long-term company knowledge, what scope it belongs to, what needs confirmation, what must be excluded, what old fact is superseded, and where the finalized Pack is published**.
+
+## Canonical internal data root
+
+This standalone Skill owns a standard internal Company Knowledge data area:
+
+```text
+<SKILL_ROOT>/company-data/
+```
+
+Canonical paths:
+
+```text
+<SKILL_ROOT>/company-data/REGISTRY.yaml
+<SKILL_ROOT>/company-data/inbox/
+<SKILL_ROOT>/company-data/pending/
+<SKILL_ROOT>/company-data/packs/<company-id>/
+```
+
+Meaning:
+- `REGISTRY.yaml` — discoverable index of available formal Company Packs;
+- `inbox/` — de-identified raw/intermediate company materials awaiting curation;
+- `pending/` — approved or review-ready company update candidates not yet formalized;
+- `packs/<company-id>/` — formal, reviewed, de-identified Company Knowledge ready for other Agents to consume.
+
+Unless the operator explicitly requests another compatible target, finalized Company Packs from this standalone Skill should be written under `company-data/packs/<company-id>/` and registered in `company-data/REGISTRY.yaml`.
 
 ## Trigger
 Invoke this skill when the operator explicitly asks to:
@@ -15,6 +40,8 @@ Invoke this skill when the operator explicitly asks to:
 - migrate legacy company knowledge into the standard format.
 
 Do not run continuously during ordinary business conversations unless the host Agent explicitly invokes it.
+
+Other Agents that only need company background information do **not** need to invoke this curation workflow. They may read `company-data/REGISTRY.yaml` and the relevant formal Pack directly.
 
 ## Supported modes
 - `BUILD` — create a new Company Pack from source materials.
@@ -48,19 +75,22 @@ Project/customer-specific items normally do not enter Company Pack unless they a
 
 ## Core workflow
 1. Identify task mode and target company.
-2. Inventory sources and note provenance.
-3. Extract only supported facts; do not fill gaps with general knowledge.
-4. Split compound statements into atomic facts when scope differs.
-5. Assign evidence state and scope.
-6. Group facts into Pack topics.
-7. Deduplicate equivalent claims.
-8. Detect conflicts, ambiguous scope, stale statements, and over-broad claims.
-9. Compare with existing Pack if present.
-10. Produce a **Review Draft**, not a silent final write.
-11. Show proposed additions, changes, exclusions, `TO_CONFIRM` items, conflicts, and superseded facts.
-12. Accept operator corrections over multiple rounds.
-13. Only after explicit operator approval, produce or write the formal Company Pack.
-14. Preserve source references and update/version metadata.
+2. Determine or create a stable `company-id`.
+3. Inventory sources and note provenance.
+4. Extract only supported facts; do not fill gaps with general knowledge.
+5. Split compound statements into atomic facts when scope differs.
+6. Assign evidence state and scope.
+7. Group facts into Pack topics.
+8. Deduplicate equivalent claims.
+9. Detect conflicts, ambiguous scope, stale statements, and over-broad claims.
+10. Compare with existing Pack if present.
+11. Produce a **Review Draft**, not a silent final write.
+12. Show proposed additions, changes, exclusions, `TO_CONFIRM` items, conflicts, and superseded facts.
+13. Accept operator corrections over multiple rounds.
+14. Only after explicit operator approval, produce or write the formal Company Pack.
+15. Write the approved Pack to `company-data/packs/<company-id>/` unless another compatible target was explicitly requested.
+16. Add or update the company entry in `company-data/REGISTRY.yaml`.
+17. Preserve source references and update/version metadata.
 
 ## Compression rule
 The goal is **high-signal operational knowledge**, not maximum text retention.
@@ -91,7 +121,8 @@ A fact is suitable for Company Knowledge only when it is sufficiently:
 2. **reusable** — useful across future tasks;
 3. **scoped** — actual company/factory/product/certificate scope is known;
 4. **supported** — source or explicit operator confirmation exists;
-5. **safe** — not confidential customer/project data that belongs elsewhere.
+5. **safe** — not confidential customer/project data that belongs elsewhere;
+6. **shareable in this repository** — sufficiently abstracted / de-identified for the intended knowledge-source use.
 
 Failure on an important dimension means `TO_CONFIRM` or `EXCLUDED`, not automatic admission.
 
@@ -126,17 +157,33 @@ Before finalization, present:
 - `Excluded from Company Knowledge`
 - `Superseded facts`
 - `Source coverage / missing source notes`
+- `Target company-id`
 - `Files to be created or changed`
+- `Registry action` — add / update / no change
 
 For small updates, keep the review concise. Do not force a large report when only one fact changed.
 
 ## Formalization boundary
 The skill may prepare final Pack content, but **formal admission requires operator confirmation**.
 
-If the host Agent provides file-write tools, only write after approval. If tools are unavailable, return the exact proposed Pack/update content instead of claiming it was written.
+If file-write tools are available, only write after approval. If tools are unavailable, return the exact proposed Pack/update content and target path instead of claiming it was written.
+
+A completed formalization normally means both:
+1. the Company Pack exists under `company-data/packs/<company-id>/`; and
+2. `company-data/REGISTRY.yaml` points to that Pack.
+
+## Read-only consumption contract
+A downstream Agent that only needs company knowledge should:
+1. locate this Skill root;
+2. read `company-data/REGISTRY.yaml`;
+3. resolve the target `company-id`;
+4. open the Pack's `INDEX.md`;
+5. load only the Pack files relevant to its task.
+
+Reading a Pack is not a curation action and does not require operator approval.
 
 ## Output target
-Use `COMPANY_PACK_SPEC.md` unless the host Agent explicitly supplies another compatible Company Pack contract.
+Use `COMPANY_PACK_SPEC.md` and the internal `company-data/` contract unless the operator explicitly supplies another compatible Company Pack contract or target location.
 
 ## Non-goals
 This skill does not:
@@ -145,4 +192,5 @@ This skill does not:
 - verify external legal/regulatory truth without evidence/tools;
 - browse the web unless the host Agent explicitly provides and requests web verification;
 - infer confidential facts from weak signals;
-- act as a replacement for source files or legal/compliance review.
+- act as a replacement for source files or legal/compliance review;
+- silently publish unreviewed or insufficiently de-identified information to `company-data/packs/`.

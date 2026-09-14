@@ -1,7 +1,10 @@
 # Company Pack: <Company Name>
 
 ## Purpose
-This pack contains confirmed, reusable company knowledge for <Company Name>.
+This pack contains confirmed, reusable, de-identified company knowledge for <Company Name>.
+
+## Consumer entry
+This Pack is intended to be discovered through `company-data/REGISTRY.yaml` and loaded selectively by downstream Agents.
 
 ## Fact-scope rule
 Company-general facts do not automatically prove project/product/factory-specific capability.
@@ -15,3 +18,6 @@ Company-general facts do not automatically prove project/product/factory-specifi
 - internal reusable workflow → `BUSINESS_SOP.md`
 - provenance → `SOURCES.md`
 - category detail → `products/`
+
+## Important use boundary
+Do not infer current project price, MOQ, certification applicability, lead time, or special commercial approval from company-general knowledge alone.

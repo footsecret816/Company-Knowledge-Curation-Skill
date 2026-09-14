@@ -1,9 +1,11 @@
 pack_id: <company-id>
-company_name: <company-name>
+company_id: <company-id>
+company_name: <company-name-or-safe-display-name>
 version: 1.0.0
 status: draft
 updated_at: <YYYY-MM-DD>
 source_types: []
 default_language: <language>
 fact_scope_policy: strict
-notes: "Formalize only after operator review and approval."
+deidentification_status: reviewed
+notes: "Formalize only after operator review and approval. Publish under company-data/packs/<company-id>/ and register in company-data/REGISTRY.yaml."
