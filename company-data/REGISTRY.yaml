@@ -1,0 +1,5 @@
+schema_version: 1.0
+purpose: >
+  Discovery index for formal, reviewed, de-identified Company Packs
+  published by this Skill for downstream Agent use.
+companies: []
